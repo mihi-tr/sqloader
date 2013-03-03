@@ -1,15 +1,28 @@
 (ns sqloader.core (:use '(csv-map core)))
 
+(defn create-constraints
+  "creates the constraints for a column"
+  [column]
+  (let [constraints {:foreign (fn [x] 
+                                (format "REFERENCES %s(%s)"
+                                        (get x :table)
+                                        (get x :key)))
+                     :unique (fn [x] "UNIQUE")}]
+        (clojure.string/join " " (map (fn [x] (let [constraint (get x 0)
+                           function (get x 1)
+                           cns (get (get column 1) constraint)]
+                       (if cns
+                         (function cns))))
+             constraints))))
+    
 (defn column-definition 
   "creates the definition of a single column"
   [column]
   (let [name (get column 0)
         type (get (get column 1) :type)
-        foreign (get (get column 1) :foreign)]
-    (if foreign
-      (format "%s %s REFERENCES %s(%s)"
-              name type (get foreign :table) (get foreign :key))
-      (format "%s %s" name type))))
+        constraints (create-constraints column)]
+      (format "%s %s %s"
+              name type constraints)))
 
 (defn column-definitions 
   "create the column definition string"

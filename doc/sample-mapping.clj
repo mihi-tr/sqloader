@@ -1,11 +1,18 @@
 (def mapping [
-  {:table "characters"
+  {:table "spaceship"
+    :create-id true
+    :column-map {
+      "name" {:column "Name" :type "varchar(150)" :unique true}
+      }}
+  {:table "crew"
    :file "doc/sample-file.doc"
    :set ["DateStyle YMD"]
    :create-id true
    :column-map {
     "name" {:column "Character Name" :type "varchar(150)"}
     "role" {:column "Character Role" :type "varchar(150)"}
+    "ship" {:foreign {:table "spaceship" :key "id" :column "Spaceship"}
+    :type "integer"}
     "age" {:column "Age" :type "integer"}
     "age_class" {:column "Age" :type "varchar(10)" :transform 
       (fn [age]
