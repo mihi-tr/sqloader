@@ -2,6 +2,8 @@
   (:use clojure.test
         sqloader.core))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest test-basic-column-definition
+  (testing "basic column definition"
+    (is (= "name varchar(10)" 
+           (column-definition ["name" {:type "varchar(10)"}])))))
+
